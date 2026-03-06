@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptVault - AI Prompt Organizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-vault"></i>
+                    <span class="logo-text">PromptVault</span>
+                </div>
+                <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="#" class="nav-item active" data-view="dashboard">
+                            <i class="fas fa-th-large"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" data-view="all">
+                            <i class="fas fa-list"></i>
+                            <span>All Prompts</span>
+                            <span class="badge" id="allPromptsCount">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" data-view="favorites">
+                            <i class="fas fa-star"></i>
+                            <span>Favorites</span>
+                            <span class="badge" id="favoritesCount">0</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" data-view="categories">
+                            <i class="fas fa-folder"></i>
+                            <span>Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" data-view="settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="categories-list" id="categoriesList">
+                    <h4>Categories</h4>
+                    <ul id="categoryFilters">
+                        <!-- Dynamic category filters -->
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" placeholder="Search prompts..." class="search-input">
+                        <kbd class="search-shortcut">⌘K</kbd>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn btn-secondary" id="importBtn" title="Import Prompts">
+                        <i class="fas fa-file-import"></i>
+                        <span>Import</span>
+                    </button>
+                    <button class="btn btn-secondary" id="exportBtn" title="Export Prompts">
+                        <i class="fas fa-file-export"></i>
+                        <span>Export</span>
+                    </button>
+                    <button class="btn btn-primary" id="createPromptBtn">
+                        <i class="fas fa-plus"></i>
+                        <span>New Prompt</span>
+                    </button>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard View -->
+                <section class="view active" id="dashboardView">
+                    <div class="view-header">
+                        <h1>Dashboard</h1>
+                        <p>Manage and organize your AI prompts</p>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: var(--accent-light); color: var(--accent);">
+                                <i class="fas fa-list"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="totalPrompts">0</span>
+                                <span class="stat-label">Total Prompts</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="totalFavorites">0</span>
+                                <span class="stat-label">Favorites</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #dbeafe; color: #3b82f6;">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="codingCount">0</span>
+                                <span class="stat-label">Coding</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #fce7f3; color: #ec4899;">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value" id="designCount">0</span>
+                                <span class="stat-label">Design</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="recent-prompts">
+                        <h2>Recent Prompts</h2>
+                        <div class="prompts-grid" id="recentPromptsGrid">
+                            <!-- Recent prompts will be rendered here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- All Prompts View -->
+                <section class="view" id="allPromptsView">
+                    <div class="view-header">
+                        <h1>All Prompts</h1>
+                        <div class="view-actions">
+                            <select id="sortSelect" class="select-input">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="title">By Title</option>
+                                <option value="usage">Most Used</option>
+                            </select>
+                            <button class="btn btn-danger" id="bulkDeleteBtn" style="display: none;">
+                                <i class="fas fa-trash"></i>
+                                Delete Selected
+                            </button>
+                        </div>
+                    </div>
+                    <div class="prompts-grid" id="allPromptsGrid">
+                        <!-- All prompts will be rendered here -->
+                    </div>
+                    <div class="empty-state" id="emptyAllPrompts" style="display: none;">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No prompts yet</h3>
+                        <p>Create your first prompt to get started</p>
+                        <button class="btn btn-primary" id="emptyCreateBtn">
+                            <i class="fas fa-plus"></i> Create Prompt
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Favorites View -->
+                <section class="view" id="favoritesView">
+                    <div class="view-header">
+                        <h1>Favorites</h1>
+                        <p>Your starred prompts</p>
+                    </div>
+                    <div class="prompts-grid" id="favoritesGrid">
+                        <!-- Favorite prompts will be rendered here -->
+                    </div>
+                    <div class="empty-state" id="emptyFavorites" style="display: none;">
+                        <i class="fas fa-star"></i>
+                        <h3>No favorites yet</h3>
+                        <p>Star prompts to add them to your favorites</p>
+                    </div>
+                </section>
+
+                <!-- Categories View -->
+                <section class="view" id="categoriesView">
+                    <div class="view-header">
+                        <h1>Categories</h1>
+                        <p>Browse prompts by category</p>
+                    </div>
+                    <div class="categories-grid" id="categoriesGrid">
+                        <!-- Categories will be rendered here -->
+                    </div>
+                </section>
+
+                <!-- Settings View -->
+                <section class="view" id="settingsView">
+                    <div class="view-header">
+                        <h1>Settings</h1>
+                        <p>Customize your experience</p>
+                    </div>
+                    <div class="settings-container">
+                        <div class="settings-group">
+                            <h3>Appearance</h3>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <span class="setting-label">Dark Mode</span>
+                                    <span class="setting-desc">Toggle dark/light theme</span>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="darkModeToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <h3>Data Management</h3>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <span class="setting-label">Export All Prompts</span>
+                                    <span class="setting-desc">Download your prompts as JSON</span>
+                                </div>
+                                <button class="btn btn-secondary" id="settingsExportBtn">
+                                    <i class="fas fa-download"></i> Export
+                                </button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <span class="setting-label">Import Prompts</span>
+                                    <span class="setting-desc">Load prompts from JSON file</span>
+                                </div>
+                                <button class="btn btn-secondary" id="settingsImportBtn">
+                                    <i class="fas fa-upload"></i> Import
+                                </button>
+                            </div>
+                            <div class="setting-item">
+                                <div class="setting-info">
+                                    <span class="setting-label">Clear All Data</span>
+                                    <span class="setting-desc">Delete all prompts permanently</span>
+                                </div>
+                                <button class="btn btn-danger" id="clearDataBtn">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <h3>Keyboard Shortcuts</h3>
+                            <div class="shortcuts-list">
+                                <div class="shortcut-item">
+                                    <span class="shortcut-keys"><kbd>⌘</kbd> + <kbd>N</kbd></span>
+                                    <span class="shortcut-desc">New Prompt</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <span class="shortcut-keys"><kbd>⌘</kbd> + <kbd>K</kbd></span>
+                                    <span class="shortcut-desc">Search</span>
+                                </div>
+                                <div class="shortcut-item">
+                                    <span class="shortcut-keys"><kbd>Esc</kbd></span>
+                                    <span class="shortcut-desc">Close Modal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Create/Edit Prompt Modal -->
+    <div class="modal-overlay" id="promptModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create New Prompt</h2>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="promptForm" class="modal-body">
+                <input type="hidden" id="promptId">
+                <div class="form-group">
+                    <label for="promptTitle">Title *</label>
+                    <input type="text" id="promptTitle" required placeholder="Enter prompt title">
+                </div>
+                <div class="form-group">
+                    <label for="promptDescription">Description</label>
+                    <input type="text" id="promptDescription" placeholder="Brief description">
+                </div>
+                <div class="form-group">
+                    <label for="promptContent">Prompt Content *</label>
+                    <textarea id="promptContent" required rows="8" placeholder="Enter your AI prompt here..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="promptCategory">Category *</label>
+                        <select id="promptCategory" required>
+                            <option value="">Select category</option>
+                            <option value="coding">Coding</option>
+                            <option value="design">Design</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="writing">Writing</option>
+                            <option value="productivity">Productivity</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="promptDifficulty">Difficulty</label>
+                        <select id="promptDifficulty">
+                            <option value="">Not set</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="promptTags">Tags (comma separated)</label>
+                    <input type="text" id="promptTags" placeholder="e.g., react, ui design, seo">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-save"></i> Save Prompt
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h2 id="previewTitle">Prompt Preview</h2>
+                <button class="modal-close" id="closePreviewModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-meta">
+                    <span class="preview-category" id="previewCategory">Category</span>
+                    <span class="preview-date" id="previewDate">Created: </span>
+                    <span class="preview-usage" id="previewUsage">Used: 0 times</span>
+                </div>
+                <div class="preview-tags" id="previewTags">
+                    <!-- Tags will be rendered here -->
+                </div>
+                <div class="preview-content">
+                    <pre id="previewContent"></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="closePreviewBtn">Close</button>
+                <button class="btn btn-primary" id="copyPreviewBtn">
+                    <i class="fas fa-copy"></i> Copy Prompt
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2>Delete Prompt</h2>
+                <button class="modal-close" id="closeDeleteModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this prompt? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Hidden File Input for Import -->
+    <input type="file" id="fileInput" accept=".json" style="display: none;">
+
+    <!-- Scripts -->
+    <script src="utils/storage.js"></script>
+    <script src="utils/search.js"></script>
+    <script src="components/promptCard.js"></script>
+    <script src="components/modal.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
